@@ -25,9 +25,16 @@ var readSTDIN = (function() {
         return function readSTDIN(callback) {
             var stdin = process.openStdin()
               , body = [];
-
             stdin.on('data', function(chunk) {
-                body.push(chunk);
+                var lines, i;
+                lines = (chunk + '').split("\n");
+                for(i = 0; i < lines.length; i++) {
+                    if (lines[i].indexOf('jslint:ignore') !== -1) {
+                        lines[i] = '\n';
+                    }
+                }
+                body.push(lines.join('\n'));
+                //body.push(chunk);
             });
 
             stdin.on('end', function(chunk) {
